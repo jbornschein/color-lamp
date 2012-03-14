@@ -51,8 +51,13 @@ void timer1_on()
     TIMSK |= (1 << OCIE1A);
 }
 
+// Curret PWM slot
 uint8_t phase = 0;
-volatile uint8_t red, green, blue;
+
+// Color to be displayed
+uint8_t red;      // XXX volatile?? XXX
+uint8_t green;
+uint8_t blue;
 
 
 #define PIN_RED    0
@@ -61,29 +66,36 @@ volatile uint8_t red, green, blue;
 #define PIN_DEBUG1 3
 #define PIN_DEBUG2 4
 
+#define PIN_ON(var, pin) (var &= ~(1 << pin))
+#define PIN_TOGGLE(var, pin) ((var) ^= (1 << (pin)))
+
 #define PIN_DEFAULT ((1 << PIN_RED) | (1 << PIN_GREEN) | (1 << PIN_BLUE))
 
 SIGNAL(SIG_OUTPUT_COMPARE1A)
 {
-    PORTB ^= (1 << PIN_DEBUG1);
+    PIN_TOGGLE(PORTB, PIN_DEBUG1);
+
     if (phase < 16) {
+        PIN_TOGGLE(PORTB, PIN_DEBUG2);
+        PIN_TOGGLE(PORTB, PIN_DEBUG2);
+
+        /* Anti volatile
         uint8_t red_   = red;
         uint8_t green_ = green;
         uint8_t blue_  = blue;
+        */
     
         // Precalc first phases
         uint8_t i;
         uint8_t port_cyc[16];   
+        uint8_t port_default = PORTB;
 
         for(i=0; i<16; i++) {
-            port_cyc[i] = PIN_DEFAULT;
-            if (red_   > i) port_cyc[i] &= ~(1 << PIN_RED);
-            if (green_ > i) port_cyc[i] &= ~(1 << PIN_GREEN);
-            if (blue_  > i) port_cyc[i] &= ~(1 << PIN_BLUE);
+            port_cyc[i] = port_default;
+            if (red   > i) PIN_ON(port_cyc[i], PIN_RED);
+            if (green > i) PIN_ON(port_cyc[i], PIN_GREEN);
+            if (blue  > i) PIN_ON(port_cyc[i], PIN_BLUE);
         }
-
-        PORTB ^= (1 << PIN_DEBUG2);
-        PORTB ^= (1 << PIN_DEBUG2);
 
         uint8_t port_cyc0 = port_cyc[0];
         uint8_t port_cyc1 = port_cyc[1];
@@ -156,10 +168,10 @@ SIGNAL(SIG_OUTPUT_COMPARE1A)
 
         phase++;
     } else {
-        uint8_t port = PIN_DEFAULT;
-        if (red   > phase) port |= (1 << PIN_RED);
-        if (green > phase) port &= ~(1 << PIN_GREEN);
-        if (blue  > phase) port |= (1 << PIN_BLUE);
+        uint8_t port = PORTB;
+        if (red   > phase) PIN_ON(port, PIN_RED);
+        if (green > phase) PIN_ON(port, PIN_GREEN);
+        if (blue  > phase) PIN_ON(port, PIN_BLUE);
         PORTB = port;
 
         OCR1A = dR[phase];
@@ -167,7 +179,7 @@ SIGNAL(SIG_OUTPUT_COMPARE1A)
         if (phase == 255)
             phase = 0;
     }
-    PORTB ^= (1 << PIN_DEBUG1);
+    PIN_TOGGLE(PORTB, PIN_DEBUG1);
 }
 
 void hsv_to_rgb(float hue, float sat, float value, 
