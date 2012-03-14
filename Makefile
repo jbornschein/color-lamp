@@ -7,7 +7,7 @@ OBJ = main.o util.o
 OUT           ?= image
 MCU_TARGET    ?= atmega8
 MCU_CC        ?= avr-gcc
-OPTIMIZE      ?= -Os
+OPTIMIZE      ?= -Os  -g
 WARNINGS      ?= -Wall
 CFLAGS        += -mmcu=$(MCU_TARGET) $(OPTIMIZE) $(WARNINGS) $(DEFS) 
 #CFLAGS        += -fnew-ra

@@ -61,6 +61,8 @@ volatile uint8_t red, green, blue;
 #define PIN_DEBUG1 3
 #define PIN_DEBUG2 4
 
+#define PIN_DEFAULT ((1 << PIN_RED) | (1 << PIN_GREEN) | (1 << PIN_BLUE))
+
 SIGNAL(SIG_OUTPUT_COMPARE1A)
 {
     PORTB ^= (1 << PIN_DEBUG1);
@@ -74,7 +76,7 @@ SIGNAL(SIG_OUTPUT_COMPARE1A)
         uint8_t port_cyc[16];   
 
         for(i=0; i<16; i++) {
-            port_cyc[i] = (1 << PIN_RED) | (1 << PIN_GREEN) | (1 << PIN_BLUE);
+            port_cyc[i] = PIN_DEFAULT;
             if (red_   > i) port_cyc[i] &= ~(1 << PIN_RED);
             if (green_ > i) port_cyc[i] &= ~(1 << PIN_GREEN);
             if (blue_  > i) port_cyc[i] &= ~(1 << PIN_BLUE);
@@ -154,7 +156,7 @@ SIGNAL(SIG_OUTPUT_COMPARE1A)
 
         phase++;
     } else {
-        uint8_t port = (1 << PIN_GREEN);
+        uint8_t port = PIN_DEFAULT;
         if (red   > phase) port |= (1 << PIN_RED);
         if (green > phase) port &= ~(1 << PIN_GREEN);
         if (blue  > phase) port |= (1 << PIN_BLUE);
@@ -228,7 +230,7 @@ void hsv_to_rgb(float hue, float sat, float value,
 int main()
 {
     // Digital I/O
-    PORTB |= (1 << PIN_RED) | (1 << PIN_GREEN) | (1 << PIN_BLUE);
+    PORTB = PIN_DEFAULT;
 	DDRB = 0xff;
     
     // Setup ADC
@@ -238,7 +240,7 @@ int main()
      *  REFS:
      *  0 0     Aref Pin
      *  0 1     AVcc
-     *  1 0     Reserved
+         *  1 0     Reserved
      *  1 1     Internal 2.56V Reference
      * 
      * MUX = 0-7: Single ended Input on ADC0-ADC7
