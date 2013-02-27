@@ -66,7 +66,7 @@ volatile uint8_t blue;
 #define PIN_DEBUG1 3
 #define PIN_DEBUG2 4
 
-#define PIN_ON(var, pin) (var &= ~(1 << pin))
+#define PIN_ON(var, pin) ((var) &= ~(1 << (pin)))
 #define PIN_TOGGLE(var, pin) ((var) ^= (1 << (pin)))
 
 #define PIN_DEFAULT ((1 << PIN_RED) | (1 << PIN_GREEN) | (1 << PIN_BLUE))
