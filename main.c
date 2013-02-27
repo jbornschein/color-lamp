@@ -88,7 +88,7 @@ SIGNAL(SIG_OUTPUT_COMPARE1A)
         // Precalc first phases
         uint8_t i;
         uint8_t port_cyc[16];   
-        uint8_t port_default = PORTB;
+        uint8_t port_default = PIN_DEFAULT | PORTB;
 
         for(i=0; i<16; i++) {
             port_cyc[i] = port_default;
@@ -168,7 +168,7 @@ SIGNAL(SIG_OUTPUT_COMPARE1A)
 
         phase++;
     } else {
-        uint8_t port = PORTB;
+        uint8_t port = PIN_DEFAULT | PORTB;
         if (red   > phase) PIN_ON(port, PIN_RED);
         if (green > phase) PIN_ON(port, PIN_GREEN);
         if (blue  > phase) PIN_ON(port, PIN_BLUE);
