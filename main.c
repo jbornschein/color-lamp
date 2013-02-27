@@ -55,9 +55,9 @@ void timer1_on()
 uint8_t phase = 0;
 
 // Color to be displayed
-uint8_t red;      // XXX volatile?? XXX
-uint8_t green;
-uint8_t blue;
+volatile uint8_t red;      // XXX volatile?? XXX
+volatile uint8_t green;
+volatile uint8_t blue;
 
 
 #define PIN_RED    0
