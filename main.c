@@ -71,7 +71,7 @@ volatile uint8_t blue;
 
 #define PIN_DEFAULT ((1 << PIN_RED) | (1 << PIN_GREEN) | (1 << PIN_BLUE))
 
-SIGNAL(SIG_OUTPUT_COMPARE1A)
+SIGNAL(TIM1_COMPA_vect)
 {
     PIN_TOGGLE(PORTB, PIN_DEBUG1);
 
