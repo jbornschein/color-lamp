@@ -4,5 +4,11 @@ before_script:
 
 build:
     script: make
+    artifacts:
+        paths:
+        - image.bin
+        - image.hex
+        - image.srec
+        - image.lst
 
         
