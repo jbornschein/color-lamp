@@ -1,6 +1,4 @@
-before_script:
-    - apt-get update
-    - apt-get install -y gcc-avr avr-libc make
+image: capsec.org:4567/devenv/xenv-avr
 
 build:
     script: make
